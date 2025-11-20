@@ -50,3 +50,8 @@ check_not_root() {
         exit 1
     fi
 }
+
+# Check if package is installed
+package_is_installed() {
+    pacman -Qi "$1" &> /dev/null
+}

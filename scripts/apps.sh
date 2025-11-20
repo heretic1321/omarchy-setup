@@ -20,17 +20,18 @@ if command -v paru &> /dev/null; then
 fi
 
 # Install Zen Browser
-# Assuming zen-browser-bin is the package name in AUR, or we might need a specific install method
-# Checking if zen-browser is available in AUR
 log_info "Installing Zen Browser using $AUR_HELPER..."
 $AUR_HELPER -S --needed --noconfirm zen-browser-bin
 
 # Install other apps
 APPS=(
-    "visual-studio-code-bin"
-    "spotify"
-    "discord"
+    "nordvpn-gui"
 )
 
 log_info "Installing other apps: ${APPS[*]}"
-$AUR_HELPER -S --needed --noconfirm "${APPS[@]}"
+for app in "${APPS[@]}"; do
+    log_info "Installing $app..."
+    if ! $AUR_HELPER -S --needed --noconfirm "$app"; then
+        log_warning "Failed to install $app"
+    fi
+done

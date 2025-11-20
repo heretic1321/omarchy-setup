@@ -28,4 +28,12 @@ UNWANTED_PACKAGES=(
     "spotify"
     "typora"    
 )
-sudo pacman -Rns --noconfirm "${UNWANTED_PACKAGES[@]}"
+
+for pkg in "${UNWANTED_PACKAGES[@]}"; do
+    if package_is_installed "$pkg"; then
+        log_info "Removing $pkg..."
+        sudo pacman -Rns --noconfirm "$pkg"
+    else
+        log_info "$pkg is not installed, skipping removal."
+    fi
+done
