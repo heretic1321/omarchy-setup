@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+BASE="$HOME/.config/hypr"
+mode="${1:-auto}"
+
+pick_mode() {
+  case "$mode" in
+    docked|laptop) echo "$mode"; return;;
+    auto)
+      # Detect any external HDMI/DP connector that reports "connected"
+      if grep -qi connected /sys/class/drm/*HDMI*/status /sys/class/drm/*DP*/status 2>/dev/null; then
+        echo docked
+      else
+        echo laptop
+      fi
+      ;;
+    *) echo "Unknown mode: $mode" >&2; exit 1;;
+  esac
+}
+
+m="$(pick_mode)"
+
+ln -sf "$BASE/monitors.$m.conf"   "$BASE/monitors.current.conf"
+ln -sf "$BASE/workspaces.$m.conf" "$BASE/workspaces.current.conf"
+
+# Optional: nudge audio default based on mode
+if command -v wpctl >/dev/null 2>&1; then
+  if [ "$m" = docked ]; then
+    # Prefer an HDMI sink if present
+    id="$(wpctl status | awk '/Sinks:/{f=1;next}/Sources:/{f=0}f' | awk '/HDMI|hdmi/{print $1; exit}' | tr -d '.')"
+    [ -n "${id:-}" ] && wpctl set-default "$id" || true
+  else
+    # Prefer analog speakers on laptop
+    id="$(wpctl status | awk '/Sinks:/{f=1;next}/Sources:/{f=0}f' | awk '/Analog Stereo/{print $1; exit}' | tr -d '.')"
+    [ -n "${id:-}" ] && wpctl set-default "$id" || true
+  fi
+fi
+
+# Reload Hyprland to apply new monitor/workspace mapping
+hyprctl reload
