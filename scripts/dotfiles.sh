@@ -13,7 +13,7 @@ cd "$DOTFILES_DIR" || handle_error $LINENO
 
 # List of packages to stow
 # Ensure these match the directory names in dotfiles/
-PACKAGES=("nvim" "tmux" "bash" "starship" "ghostty")
+PACKAGES=("nvim" "tmux" "bash" "starship" "ghostty" "hypr_overrides")
 
 log_info "Stowing dotfiles..."
 
@@ -38,6 +38,9 @@ for pkg in "${PACKAGES[@]}"; do
                 ;;
             ghostty)
                 rm -rf "$TARGET_DIR/.config/ghostty"
+                ;;
+            hypr_overrides)
+                rm -rf "$TARGET_DIR/.config/hypr/user_overrides"
                 ;;
         esac
 

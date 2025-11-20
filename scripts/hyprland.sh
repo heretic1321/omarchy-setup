@@ -2,7 +2,6 @@
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$SCRIPT_DIR/utils.sh"
 
-OVERRIDES_DIR="$SCRIPT_DIR/../hyprland_overrides"
 HYPR_CONFIG_DIR="$HOME/.config/hypr"
 HYPR_CONFIG_FILE="$HYPR_CONFIG_DIR/hyprland.conf"
 
@@ -14,22 +13,9 @@ if [ ! -d "$HYPR_CONFIG_DIR" ]; then
     mkdir -p "$HYPR_CONFIG_DIR"
 fi
 
-# Link override files
-# We link them to ~/.config/hypr/user_overrides/ to keep them clean, 
-# or directly to ~/.config/hypr/ if we follow the existing pattern.
-# Let's use a subdirectory to be cleaner as requested "organized neatly".
+# We rely on dotfiles.sh (stow) to populate ~/.config/hypr/user_overrides
 USER_OVERRIDES_DIR="$HYPR_CONFIG_DIR/user_overrides"
 mkdir -p "$USER_OVERRIDES_DIR"
-
-log_info "Linking override files to $USER_OVERRIDES_DIR..."
-for file in "$OVERRIDES_DIR"/*.conf; do
-    filename=$(basename "$file")
-    target="$USER_OVERRIDES_DIR/$filename"
-    if [ -L "$target" ] || [ -f "$target" ]; then
-        rm -f "$target"
-    fi
-    ln -s "$file" "$target"
-done
 
 # Handle Profile (Monitors/Workspaces)
 # We need to link the correct monitor/workspace config to a 'current' file
@@ -78,6 +64,26 @@ if [ ! -f "$HYPR_CONFIG_FILE" ]; then
     log_warning "$HYPR_CONFIG_FILE not found. Creating a basic one."
     touch "$HYPR_CONFIG_FILE"
 fi
+
+# Comment out conflicting default sources in ~/.config/hypr/
+# These are the ones that Omarchy puts there by default but we want to use our overrides instead
+CONFLICTING_SOURCES=(
+    "source = ~/.config/hypr/monitors.conf"
+    "source = ~/.config/hypr/input.conf"
+    "source = ~/.config/hypr/bindings.conf"
+    "source = ~/.config/hypr/envs.conf"
+    "source = ~/.config/hypr/looknfeel.conf"
+    "source = ~/.config/hypr/autostart.conf"
+)
+
+for conflict in "${CONFLICTING_SOURCES[@]}"; do
+    # Escape special characters for sed
+    escaped_conflict=$(echo "$conflict" | sed 's/[\/&]/\\&/g')
+    if grep -Fq "$conflict" "$HYPR_CONFIG_FILE"; then
+        log_info "Commenting out conflicting source: $conflict"
+        sed -i "s|^$escaped_conflict|# $conflict|" "$HYPR_CONFIG_FILE"
+    fi
+done
 
 # Append sources if not present
 for line in "${OVERRIDES_TO_SOURCE[@]}"; do
