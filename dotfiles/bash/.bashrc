@@ -13,4 +13,4 @@ source ~/.local/share/omarchy/default/bash/rc
 # Set a custom prompt with the directory revealed (alternatively use https://starship.rs)
 eval "$(starship init bash)"
 
-. "$HOME/.local/share/../bin/env"
+
