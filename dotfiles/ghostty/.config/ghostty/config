@@ -1,0 +1,20 @@
+# Ghostty Configuration
+
+# Shell
+command = /bin/bash
+
+# Font
+font-size = 12
+# font-family = "JetBrains Mono" # Uncomment if you have a preferred font
+
+# Theme (Optional, matches Limine/Omarchy vibe)
+theme = TokyoNight
+
+# Window
+window-padding-x = 15
+window-padding-y = 15
+window-decoration = false
+
+# Keybindings (Optional)
+# keybind = ctrl+shift+c=copy_to_clipboard
+# keybind = ctrl+shift+v=paste_from_clipboard

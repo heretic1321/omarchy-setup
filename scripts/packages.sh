@@ -12,7 +12,7 @@ PACKAGES=(
     "stow"
     "git"
     "base-devel"
-    "wezterm"
+    "ghostty"
     "neovim"
     "starship"
     "tmux"
@@ -22,6 +22,12 @@ PACKAGES=(
 
 log_info "Installing packages: ${PACKAGES[*]}"
 sudo pacman -S --needed --noconfirm "${PACKAGES[@]}"
+
+# Set Bash as default shell
+if [ "$SHELL" != "/bin/bash" ]; then
+    log_info "Changing default shell to bash..."
+    sudo chsh -s /bin/bash "$USER"
+fi
 
 # Remove unwanted packages (Placeholder)
 UNWANTED_PACKAGES=(

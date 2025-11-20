@@ -13,7 +13,7 @@ cd "$DOTFILES_DIR" || handle_error $LINENO
 
 # List of packages to stow
 # Ensure these match the directory names in dotfiles/
-PACKAGES=("nvim" "tmux" "bash" "starship")
+PACKAGES=("nvim" "tmux" "bash" "starship" "ghostty")
 
 log_info "Stowing dotfiles..."
 
@@ -35,6 +35,9 @@ for pkg in "${PACKAGES[@]}"; do
                 ;;
             starship)
                 rm -f "$TARGET_DIR/.config/starship.toml"
+                ;;
+            ghostty)
+                rm -rf "$TARGET_DIR/.config/ghostty"
                 ;;
         esac
 
