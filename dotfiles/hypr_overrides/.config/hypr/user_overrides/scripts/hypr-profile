@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-BASE="$HOME/.config/hypr"
+BASE="$HOME/.config/hypr/user_overrides"
 mode="${1:-auto}"
 
 pick_mode() {
