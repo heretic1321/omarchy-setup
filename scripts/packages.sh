@@ -18,6 +18,7 @@ PACKAGES=(
     "tmux"
     "fastfetch"
     "btop"
+    "gum"
 )
 
 log_info "Installing packages: ${PACKAGES[*]}"
@@ -32,7 +33,7 @@ fi
 # Remove unwanted packages (Placeholder)
 UNWANTED_PACKAGES=(
     "spotify"
-    "typora"    
+    "typora"
 )
 
 for pkg in "${UNWANTED_PACKAGES[@]}"; do
