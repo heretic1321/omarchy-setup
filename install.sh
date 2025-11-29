@@ -51,6 +51,7 @@ export OMARCHY_PROFILE="$PROFILE"
 STEPS=(
     "scripts/packages.sh"
     "scripts/webapps.sh"
+    "scripts/themes.sh"
     "scripts/dotfiles.sh"
     "scripts/hyprland.sh"
     "scripts/apps.sh"
