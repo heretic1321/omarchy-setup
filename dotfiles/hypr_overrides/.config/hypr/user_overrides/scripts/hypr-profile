@@ -6,13 +6,19 @@ mode="${1:-auto}"
 
 pick_mode() {
   case "$mode" in
-    docked|laptop) echo "$mode"; return;;
+    docked|laptop|pc) echo "$mode"; return;;
     auto)
-      # Detect any external HDMI/DP connector that reports "connected"
-      if grep -qi connected /sys/class/drm/*HDMI*/status /sys/class/drm/*DP*/status 2>/dev/null; then
-        echo docked
+      # Check if we have an eDP display (laptop internal screen)
+      if ls /sys/class/drm/card*/eDP-* >/dev/null 2>&1; then
+        # This is a laptop - check for external monitors
+        if grep -qi connected /sys/class/drm/*HDMI*/status /sys/class/drm/*DP*/status 2>/dev/null; then
+          echo docked
+        else
+          echo laptop
+        fi
       else
-        echo laptop
+        # No eDP display = desktop PC
+        echo pc
       fi
       ;;
     *) echo "Unknown mode: $mode" >&2; exit 1;;
