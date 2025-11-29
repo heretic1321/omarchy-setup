@@ -19,9 +19,9 @@ if command -v paru &> /dev/null; then
     AUR_HELPER="paru"
 fi
 
-# Install Zen Browser
-log_info "Installing Zen Browser using $AUR_HELPER..."
-$AUR_HELPER -S --needed --noconfirm zen-browser-bin
+# Install Brave Browser
+log_info "Installing Brave Browser using $AUR_HELPER..."
+$AUR_HELPER -S --needed --noconfirm brave-bin
 
 # Install other apps
 APPS=(
